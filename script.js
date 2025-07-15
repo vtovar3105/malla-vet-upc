@@ -173,7 +173,6 @@ for (const [ciclo, cursos] of Object.entries(mallaPorCiclo)) {
   container.appendChild(col);
 }
 
-// Al hacer clic en un curso habilitado, se aprueba
 // Escucha los clics y guarda en localStorage
 container.addEventListener('click', e => {
   const cell = e.target.closest('.cell');
