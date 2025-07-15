@@ -173,24 +173,23 @@ for (const [ciclo, cursos] of Object.entries(mallaPorCiclo)) {
   container.appendChild(col);
 }
 
-// Escucha los clics y guarda en localStorage
+// Al hacer clic en un curso habilitado, se aprueba y guarda
 container.addEventListener('click', e => {
   const cell = e.target.closest('.cell');
   if (!cell || !cell.classList.contains('enabled')) return;
-
   cell.classList.toggle('approved');
   guardarAprobados();
   updateUnlocks();
 });
 
-// Función que guarda los aprobados
+// Guarda cursos aprobados en localStorage
 function guardarAprobados() {
   const aprobados = [...document.querySelectorAll('.cell.approved')]
     .map(cell => cell.id);
   localStorage.setItem('cursosAprobados', JSON.stringify(aprobados));
 }
 
-// Función que restaura los aprobados guardados
+// Restaura cursos aprobados desde localStorage
 function restaurarAprobados() {
   const data = JSON.parse(localStorage.getItem('cursosAprobados') || '[]');
   data.forEach(id => {
@@ -201,7 +200,7 @@ function restaurarAprobados() {
   });
 }
 
-// Actualiza los cursos habilitados
+// Habilita/deshabilita cursos según prerequisitos
 function updateUnlocks() {
   Object.entries(prerequisitesMap).forEach(([curso, prereqs]) => {
     const el = document.getElementById(slugify(curso));
@@ -214,24 +213,6 @@ function updateUnlocks() {
   });
 }
 
-// Restauramos antes de calcular desbloqueos
+// Restauramos y desbloqueamos al cargar
 restaurarAprobados();
-updateUnlocks();
-
-});
-
-// Función para actualizar qué cursos están habilitados
-function updateUnlocks() {
-  Object.entries(prerequisitesMap).forEach(([curso, prereqs]) => {
-    const el = document.getElementById(slugify(curso));
-    if (el.classList.contains('approved')) return;
-    const desbloqueado = prereqs.every(p =>
-      document.getElementById(slugify(p)).classList.contains('approved')
-    );
-    el.classList.toggle('enabled', desbloqueado);
-    el.classList.toggle('locked', !desbloqueado);
-  });
-}
-
-// Ejecutamos una vez al cargar
 updateUnlocks();
